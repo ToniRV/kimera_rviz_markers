@@ -63,11 +63,14 @@ makeDroneMarkers(const ros::Time& timestamp,
     rotor.pose.position.y = drone_params.arm_len * sin(angle) * marker_scale;
     rotor.id++;
 
-    arm.pose.position.x = rotor.pose.position.x / 2 + position.x();
-    arm.pose.position.y = rotor.pose.position.y / 2 + position.y();
+    arm.pose.position.x = rotor.pose.position.x / 2 ;
+    arm.pose.position.y = rotor.pose.position.y / 2 ;
     arm.pose.orientation = tf::createQuaternionMsgFromYaw(angle);
     arm.id++;
 
+    // Update to global coordinates.
+    arm.pose.position.x += position.x();
+    arm.pose.position.y += position.y();
     rotor.pose.position.x += position.x();
     rotor.pose.position.y += position.y();
 
