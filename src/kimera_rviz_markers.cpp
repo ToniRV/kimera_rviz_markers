@@ -16,7 +16,6 @@ using IMC = viz_msgs::InteractiveMarkerControl;
 /// Hexacopter marker code adapted from libsfly_viz thanks to Markus Achtelik.
 std::vector<viz_msgs::Marker>
 makeDroneMarkers(const ros::Time& timestamp,
-                 const tf::Vector3& position,
                  const DroneParams& drone_params) {
   ROS_ASSERT(drone_params.num_rotors >= 2);
   const std::string& frame_id = drone_params.frame_id;
@@ -32,11 +31,11 @@ makeDroneMarkers(const ros::Time& timestamp,
   rotor.scale.x = 0.2 * marker_scale;
   rotor.scale.y = 0.2 * marker_scale;
   rotor.scale.z = 0.01 * marker_scale;
-  rotor.color.r = 0.4;
-  rotor.color.g = 0.4;
-  rotor.color.b = 0.4;
+  rotor.color.r = 1.0;
+  rotor.color.g = 1.0;
+  rotor.color.b = 1.0;
   rotor.color.a = 0.8;
-  rotor.pose.position.z = position.z();
+  rotor.pose.position.z = 0;
 
   // Arm marker template.
   viz_msgs::Marker arm;
@@ -48,11 +47,12 @@ makeDroneMarkers(const ros::Time& timestamp,
   arm.scale.x = drone_params.arm_len * marker_scale;
   arm.scale.y = 0.02 * marker_scale;
   arm.scale.z = 0.01 * marker_scale;
+  // Put all these hardcoded things in YAML file...
   arm.color.r = 0.0;
   arm.color.g = 0.0;
   arm.color.b = 1.0;
   arm.color.a = 1.0;
-  arm.pose.position.z = -0.015 * marker_scale + position.z();
+  arm.pose.position.z = -0.015 * marker_scale;
 
   float angle_increment = 2 * M_PI / drone_params.num_rotors;
 
@@ -67,12 +67,6 @@ makeDroneMarkers(const ros::Time& timestamp,
     arm.pose.position.y = rotor.pose.position.y / 2 ;
     arm.pose.orientation = tf::createQuaternionMsgFromYaw(angle);
     arm.id++;
-
-    // Update to global coordinates.
-    arm.pose.position.x += position.x();
-    arm.pose.position.y += position.y();
-    rotor.pose.position.x += position.x();
-    rotor.pose.position.y += position.y();
 
     drone_markers.push_back(rotor);
     drone_markers.push_back(arm);
@@ -92,9 +86,6 @@ makeDroneMarkers(const ros::Time& timestamp,
   body.color.g = drone_params.g_color;
   body.color.b = drone_params.b_color;
   body.color.a = 1.0;
-  body.pose.position.x = position.x();
-  body.pose.position.y = position.y();
-  body.pose.position.z = position.z();
 
   drone_markers.push_back(body);
 
@@ -127,11 +118,9 @@ int main(int argc, char** argv) {
   nh_private_.getParam("g_color", quad_params.g_color);
   nh_private_.getParam("b_color", quad_params.b_color);
 
-  tf::Vector3 position (0, 0, 0);
   tf::Quaternion quaternion;
-  ros::Time timestamp;
   std::vector<visualization_msgs::Marker> drone_markers =
-      krm::makeDroneMarkers(timestamp, position, quad_params);
+      krm::makeDroneMarkers(ros::Time(), quad_params);
   visualization_msgs::Marker drone_mesh_marker =
       krm::makeMesh();
 

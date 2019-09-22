@@ -22,7 +22,6 @@ struct DroneParams {
 // Marker makers
 std::vector<visualization_msgs::Marker>
 makeDroneMarkers(const ros::Time& timestamp,
-                 const tf::Vector3& position,
                  const DroneParams& drone_params);
 visualization_msgs::Marker makeMesh();
 }
