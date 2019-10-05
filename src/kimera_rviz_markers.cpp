@@ -139,7 +139,9 @@ int main(int argc, char** argv) {
       sleep(1);
     }
     ROS_INFO_ONCE("Publishing drone markers.");
-    drone_marker_pub.publish(drone_markers);
+    visualization_msgs::MarkerArray msg;
+    msg.markers = drone_markers;
+    drone_marker_pub.publish(msg);
     //drone_mesh_marker_pub.publish(drone_mesh_marker);
     ros::spinOnce();
     rate.sleep();

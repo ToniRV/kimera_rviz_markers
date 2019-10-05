@@ -29,7 +29,9 @@ int main(int argc, char** argv) {
 
   while(ros::ok()) {
     if (drone_marker_pub.getNumSubscribers() > 0) {
-      drone_marker_pub.publish(drone_markers);
+      visualization_msgs::MarkerArray msg;
+      msg.markers = drone_markers;
+      drone_marker_pub.publish(msg);
     }
     ros::spinOnce();
     rate.sleep();
