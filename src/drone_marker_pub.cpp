@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
   tf::Vector3 position (0, 0, 0);
   ros::Time timestamp = ros::Time();
   std::vector<visualization_msgs::Marker> drone_markers =
-      krm::makeDroneMarkers(timestamp, position, quad_params);
+      krm::makeDroneMarkers(timestamp, quad_params);
 
   ros::Rate rate (20);
   ros::Publisher drone_marker_pub =
